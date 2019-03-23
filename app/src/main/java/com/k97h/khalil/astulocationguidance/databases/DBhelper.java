@@ -51,7 +51,8 @@ public class DBhelper extends SQLiteOpenHelper {
 
     public List<LocationData> getLocationList() {
         List<LocationData> data=new ArrayList<>();
-        LocationData locationData=new LocationData("kerayu",1,"kerayu is astu",null,8.8878,39.7686);
+
+        LocationData locationData=new LocationData("kerayu",1,"kerayu is astu",null,8.559088,39.285646);
         data.add(locationData);
 
         return data;

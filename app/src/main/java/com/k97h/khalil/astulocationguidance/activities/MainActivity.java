@@ -30,9 +30,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
-    private LocationFragment locationFragment;
-
-@Override
+    @Override
 protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -57,15 +55,17 @@ protected void onCreate(Bundle savedInstanceState){
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        locationFragment=LocationFragment.newInstance(dBhelper);
+        LocationFragment locationFragment = LocationFragment.newInstance(dBhelper);
 
         gotoFragment(locationFragment,true);
         locationFragment.setOnFragmentListener(new FragmentClickListener() {
             @Override
             public void onClickItem(List<LocationData> data, int position) {
-                gotoFragment(LocationDetailFragment.newInstance(data,position),false);
+                gotoFragment(LocationDetailFragment.newInstance(MainActivity.this,data,position),false);
             }
         });
+
+
 
         }
 
@@ -87,7 +87,7 @@ protected void onCreate(Bundle savedInstanceState){
 
     }
 
-    private void gotoFragment(Fragment locationListFragment,boolean b) {
+    public void gotoFragment(Fragment locationListFragment,boolean b) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 

@@ -62,6 +62,11 @@ public class LocationFragment extends Fragment {
                     listener.onClickItem(data,position);
 
             }
+
+            @Override
+            public void goMapClick() {
+
+            }
         });
     }
 
