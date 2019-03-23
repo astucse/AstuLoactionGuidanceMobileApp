@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragments.LocationDetailFragment">
+    <TextView
+        android:id="@+id/title"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+       <ImageView
+           android:id="@+id/images"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:src="@drawable/sidebar"
+           android:contentDescription="@string/todo"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/detail"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+    <Button
+        android:id="@+id/link"
+        android:text="@string/show_on_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
