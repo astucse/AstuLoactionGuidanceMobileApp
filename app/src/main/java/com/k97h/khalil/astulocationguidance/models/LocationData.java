@@ -9,15 +9,15 @@ public class LocationData implements Serializable {
     private int id;
     private String name;
     private String description;
-    private Bitmap image;
+    private byte[] image;
     private double latitude;
     private double longitude;
 
 
 
-    public LocationData(String name, int id, String description, Bitmap image, double latitude, double longitude) {
-        this.name = name;
+    public LocationData(int id, String name, String description, byte[] image, double latitude, double longitude) {
         this.id = id;
+        this.name = name;
         this.description = description;
         this.image = image;
         this.latitude = latitude;
@@ -36,7 +36,7 @@ public class LocationData implements Serializable {
         return description;
     }
 
-    public Bitmap getImage() {
+    public byte[] getImage() {
         return image;
     }
 

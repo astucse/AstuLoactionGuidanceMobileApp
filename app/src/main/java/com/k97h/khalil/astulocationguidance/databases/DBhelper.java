@@ -2,10 +2,10 @@ package com.k97h.khalil.astulocationguidance.databases;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.k97h.khalil.astulocationguidance.adapters.LocationAdapter;
 import com.k97h.khalil.astulocationguidance.models.LocationData;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DBhelper extends SQLiteOpenHelper {
 
-    public static final String DBName="locationdb.db";
+    public static final String DBName= "location2db";
     @SuppressLint("SdCardPath")
     public static final String DBLocation="/data/data/com.k97h.khalil.astulocationguidance/databases/";
     private Context mcontext;
@@ -50,11 +50,21 @@ public class DBhelper extends SQLiteOpenHelper {
     }
 
     public List<LocationData> getLocationList() {
+
+        LocationData locationData;
         List<LocationData> data=new ArrayList<>();
-
-        LocationData locationData=new LocationData("kerayu",1,"kerayu is astu",null,8.559088,39.285646);
+        openDatabase();
+        String[] args={"%"+""+"%"};
+        Cursor cursor=msqLiteDatabase.rawQuery("Select * From location Where name= ?",args);
+        cursor.moveToFirst();
+        while(cursor.moveToNext()){
+            locationData=new LocationData(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getBlob(3),cursor.getDouble(4),cursor.getDouble(5));
+            data.add(locationData);
+        }
+        cursor.close();
+        closeDatabase();
+        locationData=new LocationData(4,"kerayu","adaama",null,5.344555,2.567667);
         data.add(locationData);
-
         return data;
     }
 }

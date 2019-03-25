@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.k97h.khalil.astulocationguidance.R;
 import com.k97h.khalil.astulocationguidance.interfaces.LocationItemClickListener;
