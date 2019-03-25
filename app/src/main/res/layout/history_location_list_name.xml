@@ -7,17 +7,17 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/locationlistitem"
+        android:id="@+id/locationhistoryitem"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_gravity="center"
         android:layout_height="wrap_content" />
 
     <ImageView
-        android:id="@+id/favoriateitem"
+        android:id="@+id/btndelete"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:srcCompat="@drawable/ic_favorite"
+        app:srcCompat="@drawable/ic_delete"
         android:contentDescription="@string/todo" />
 
 </LinearLayout>

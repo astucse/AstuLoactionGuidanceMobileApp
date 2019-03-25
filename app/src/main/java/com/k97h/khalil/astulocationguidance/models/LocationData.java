@@ -2,7 +2,9 @@ package com.k97h.khalil.astulocationguidance.models;
 
 import android.graphics.Bitmap;
 
-public class LocationData {
+import java.io.Serializable;
+
+public class LocationData implements Serializable {
 
     private int id;
     private String name;

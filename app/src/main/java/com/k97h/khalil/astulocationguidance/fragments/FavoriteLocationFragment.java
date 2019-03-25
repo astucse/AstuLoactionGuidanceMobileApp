@@ -1,7 +1,6 @@
 package com.k97h.khalil.astulocationguidance.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,11 +8,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ListView;
 
 import com.k97h.khalil.astulocationguidance.R;
-import com.k97h.khalil.astulocationguidance.activities.MainActivity;
+import com.k97h.khalil.astulocationguidance.adapters.FavoriateLocationAdapter;
+import com.k97h.khalil.astulocationguidance.databases.DBhelper;
 import com.k97h.khalil.astulocationguidance.interfaces.FragmentClickListener;
 import com.k97h.khalil.astulocationguidance.interfaces.LocationItemClickListener;
 import com.k97h.khalil.astulocationguidance.models.LocationData;
@@ -21,21 +20,17 @@ import com.k97h.khalil.astulocationguidance.models.LocationData;
 import java.util.List;
 
 
-public class LocationDetailFragment extends Fragment {
+public class FavoriteLocationFragment extends Fragment {
 
+    private DBhelper dBhelper;
+    private FragmentClickListener listener;
     private List<LocationData> data;
-    private int position;
-    private MainActivity mainActivity;
-    public LocationDetailFragment() {
-        // Required empty public constructor
+    public FavoriteLocationFragment() {
     }
 
-    public static LocationDetailFragment newInstance(MainActivity mainActivity, List<LocationData> data, int position) {
-        LocationDetailFragment fragment = new LocationDetailFragment();
-        fragment.mainActivity=mainActivity;
-        fragment.data=data;
-        fragment.position=position;
-
+    public static FavoriteLocationFragment newInstance(DBhelper dBhelper) {
+        FavoriteLocationFragment fragment = new FavoriteLocationFragment();
+        fragment.dBhelper=dBhelper;
         return fragment;
     }
 
@@ -43,28 +38,30 @@ public class LocationDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_location_detail, container, false);
+        return inflater.inflate(R.layout.favoriate_location, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView textView=view.findViewById(R.id.detail);
-        TextView textView1=view.findViewById(R.id.title);
-        textView1.setText(data.get(position).getName());
-        textView.setText(data.get(position).getDescription());
-        Button button=view.findViewById(R.id.link);
-        final LocationMapsFragment mapsFragment=LocationMapsFragment.newInstance(data.get(position).getLatitude(),data.get(position).getLongitude());
-        button.setOnClickListener(new View.OnClickListener() {
+        ListView favoriatelist=view.findViewById(R.id.favlocationlist);
+        data=dBhelper.getLocationList();
+        FavoriateLocationAdapter favoriateLocationAdapter=new FavoriateLocationAdapter(getContext(),data);
+        favoriatelist.setAdapter(favoriateLocationAdapter);
+        favoriateLocationAdapter.setOnItemClickListener(new LocationItemClickListener() {
             @Override
-            public void onClick(View v) {
-                mainActivity.gotoFragment(mapsFragment,false);
+            public void onItemClicked(int position) {
+                if(listener!=null)
+                    listener.onClickItem(data,position);
             }
         });
+    }
+
+    public void setOnFragmentListener(FragmentClickListener listener){
+        this.listener=listener;
     }
 
     @Override

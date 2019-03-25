@@ -1,6 +1,5 @@
 package com.k97h.khalil.astulocationguidance.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,18 +14,16 @@ import com.k97h.khalil.astulocationguidance.models.LocationData;
 
 import java.util.List;
 
-public class LocationAdapter extends BaseAdapter {
-
+public class FavoriateLocationAdapter extends BaseAdapter {
 
     private Context context;
     private List<LocationData> data;
     private LocationItemClickListener itemClickListener;
 
-    public LocationAdapter(Context context,List<LocationData> data){
-        this.context=context;
+    public FavoriateLocationAdapter(Context context,List<LocationData> data) {
+        this.context = context;
         this.data=data;
     }
-
     @Override
     public int getCount() {
         return data.size();
@@ -44,35 +41,19 @@ public class LocationAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final ViewHolder viewHolder;
+        FavoriateLocationAdapter.ViewHolder viewHolder;
         if(convertView==null){
-            viewHolder=new ViewHolder();
-            convertView  = LayoutInflater.from(context).inflate(R.layout.location_list_name,parent,false);
-            viewHolder.textView=convertView.findViewById(R.id.locationlistitem);
-            viewHolder.favoriateitem=convertView.findViewById(R.id.favoriateitem);
+            viewHolder=new FavoriateLocationAdapter.ViewHolder();
+            convertView  = LayoutInflater.from(context).inflate(R.layout.favoriate_location_list_name,parent,false);
+            viewHolder.textView=convertView.findViewById(R.id.favoriateitem);
             convertView.setTag(viewHolder);
         }else{
 
-            viewHolder=(ViewHolder) convertView.getTag();
+            viewHolder=(FavoriateLocationAdapter.ViewHolder) convertView.getTag();
         }
 
         LocationData locationData=data.get(position);
         viewHolder.textView.setText(locationData.getName());
-        viewHolder.favoriateitem.setTag(0);
-        viewHolder.favoriateitem.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View v) {
-                int i= (int) viewHolder.favoriateitem.getTag();
-                if (i == 0) {
-                    viewHolder.favoriateitem.setImageResource(R.drawable.ic_favorite);
-                    viewHolder.favoriateitem.setTag(1);
-                }else{
-                    viewHolder.favoriateitem.setImageResource(R.drawable.ic_favorite_none);
-                    viewHolder.favoriateitem.setTag(0);
-                }
-            }
-        });
         viewHolder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +67,6 @@ public class LocationAdapter extends BaseAdapter {
 
     class ViewHolder{
         TextView textView;
-        ImageView favoriateitem;
     }
     public void setOnItemClickListener(LocationItemClickListener listener){
         this.itemClickListener=listener;

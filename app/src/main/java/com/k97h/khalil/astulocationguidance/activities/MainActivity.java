@@ -1,7 +1,10 @@
 package com.k97h.khalil.astulocationguidance.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,10 +16,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.k97h.khalil.astulocationguidance.R;
 import com.k97h.khalil.astulocationguidance.databases.DBhelper;
-import com.k97h.khalil.astulocationguidance.fragments.LocationDetailFragment;
+import com.k97h.khalil.astulocationguidance.fragments.FavoriteLocationFragment;
+import com.k97h.khalil.astulocationguidance.fragments.HistoryLocationFragment;
 import com.k97h.khalil.astulocationguidance.fragments.LocationFragment;
 import com.k97h.khalil.astulocationguidance.interfaces.FragmentClickListener;
 import com.k97h.khalil.astulocationguidance.models.LocationData;
@@ -26,48 +32,104 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
+    private  FavoriteLocationFragment favoriateLocationFragment;
+    private LocationFragment locationFragment;
+    private HistoryLocationFragment historyLocationFragment;
+
     @Override
-protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
+        setContentView(R.layout.activity_main_1);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DBhelper dBhelper=new DBhelper(this);
+        DBhelper dBhelper = new DBhelper(this);
 
-    File database=getApplicationContext().getDatabasePath(DBhelper.DBName);
-    if(!database.exists()){
-        dBhelper.getReadableDatabase();
-        copyDatabase(this);
-    }
+        File database = getApplicationContext().getDatabasePath(DBhelper.DBName);
+        if (!database.exists()) {
+            dBhelper.getReadableDatabase();
+            copyDatabase(this);
+        }
 
-        DrawerLayout drawer=(DrawerLayout)findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle=new ActionBarDrawerToggle(
-        this,drawer,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView=(NavigationView)findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        locationFragment = LocationFragment.newInstance(dBhelper);
+        favoriateLocationFragment = FavoriteLocationFragment.newInstance(dBhelper);
+        historyLocationFragment = HistoryLocationFragment.newInstance(dBhelper);
 
-        LocationFragment locationFragment = LocationFragment.newInstance(dBhelper);
-
-        gotoFragment(locationFragment,true);
+        gotoFragment(locationFragment, true);
+        favoriateLocationFragment.setOnFragmentListener(new FragmentClickListener() {
+            @Override
+            public void onClickItem(List<LocationData> data, int position) {
+                Intent intent = new Intent(MainActivity.this, LocationDetailActivity.class);
+                intent.putExtra("data", (Serializable) data);
+                intent.putExtra("position", position);
+                startActivity(intent);
+            }
+        });
+        historyLocationFragment.setOnFragmentListener(new FragmentClickListener() {
+            @Override
+            public void onClickItem(List<LocationData> data, int position) {
+                Intent intent = new Intent(MainActivity.this, LocationDetailActivity.class);
+                intent.putExtra("data", (Serializable) data);
+                intent.putExtra("position", position);
+                startActivity(intent);
+            }
+        });
         locationFragment.setOnFragmentListener(new FragmentClickListener() {
             @Override
             public void onClickItem(List<LocationData> data, int position) {
-                gotoFragment(LocationDetailFragment.newInstance(MainActivity.this,data,position),false);
+                Intent intent = new Intent(MainActivity.this, LocationDetailActivity.class);
+                intent.putExtra("data", (Serializable) data);
+                intent.putExtra("position", position);
+                startActivity(intent);
             }
         });
 
 
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                   gotoFragment(locationFragment,false);
+                   return true;
+                case R.id.navigation_dashboard:
+                  gotoFragment(favoriateLocationFragment,false);
+                  return true;
+                case R.id.navigation_notifications:
+                    gotoFragment(historyLocationFragment,false);
+                    return true;
+            }
+            return false;
         }
+    };
+
 
     private void copyDatabase(Context context) {
         try {
@@ -99,16 +161,6 @@ protected void onCreate(Bundle savedInstanceState){
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
@@ -123,9 +175,7 @@ protected void onCreate(Bundle savedInstanceState){
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -136,9 +186,9 @@ protected void onCreate(Bundle savedInstanceState){
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.banks) {
             // Handle the camera action
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.business) {
 
         } else if (id == R.id.nav_share) {
 

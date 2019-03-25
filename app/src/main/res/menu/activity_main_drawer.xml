@@ -3,16 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Map" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
-    </group>
+    <item android:title="Categories">
+        <menu>
+            <item
+                android:id="@+id/business"
+                android:title="business"
+                android:icon="@drawable/ic_business"/>
+            <item
+                android:id="@+id/hospital"
+                android:title="hospital"
+                android:icon="@drawable/ic_local_hospital"/>
+            <item
+                android:id="@+id/banks"
+                android:title="Banks and Atm"
+                android:icon="@drawable/ic_local_atm"/>
+
+        </menu>
+    </item>
 
     <item android:title="Communicate">
         <menu>
