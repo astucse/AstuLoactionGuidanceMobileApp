@@ -1,6 +1,8 @@
 package com.k97h.khalil.astulocationguidance.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.k97h.khalil.astulocationguidance.R;
@@ -39,6 +42,9 @@ public class LocationDetailActivity extends AppCompatActivity {
             }
         });
         TextView textView=findViewById(R.id.text_data);
+        ImageView imageView=findViewById(R.id.images);
+        Bitmap bmp= BitmapFactory.decodeByteArray(data.get(position).getImage(), 0 , data.get(position).getImage().length);
+        imageView.setImageBitmap(bmp);
         textView.setText(data.get(position).getDescription());
         Button button=findViewById(R.id.gotomap);
         button.setOnClickListener(new View.OnClickListener() {

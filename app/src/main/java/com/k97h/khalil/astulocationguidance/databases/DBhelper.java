@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DBhelper extends SQLiteOpenHelper {
 
-    public static final String DBName= "location2db";
+    public static final String DBName= "locationdata.sqlite3";
     @SuppressLint("SdCardPath")
     public static final String DBLocation="/data/data/com.k97h.khalil.astulocationguidance/databases/";
     private Context mcontext;
@@ -54,17 +54,16 @@ public class DBhelper extends SQLiteOpenHelper {
         LocationData locationData;
         List<LocationData> data=new ArrayList<>();
         openDatabase();
-        String[] args={"%"+""+"%"};
-        Cursor cursor=msqLiteDatabase.rawQuery("Select * From location Where name= ?",args);
+        Cursor cursor=msqLiteDatabase.rawQuery("Select * From locations",null);
         cursor.moveToFirst();
-        while(cursor.moveToNext()){
+        while(!cursor.isAfterLast()){
             locationData=new LocationData(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getBlob(3),cursor.getDouble(4),cursor.getDouble(5));
             data.add(locationData);
+            cursor.moveToNext();
         }
         cursor.close();
         closeDatabase();
-        locationData=new LocationData(4,"kerayu","adaama",null,5.344555,2.567667);
-        data.add(locationData);
+
         return data;
     }
 }
