@@ -15,7 +15,7 @@
                 android:icon="@drawable/ic_local_hospital"/>
             <item
                 android:id="@+id/banks"
-                android:title="Banks and Atm"
+                android:title="@string/banks_and_atm"
                 android:icon="@drawable/ic_local_atm"/>
 
         </menu>

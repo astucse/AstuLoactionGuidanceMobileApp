@@ -49,8 +49,25 @@ public class DBhelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<LocationData> getLocationList() {
+    public List<LocationData> getLocationList(String category) {
 
+        LocationData locationData;
+        List<LocationData> data=new ArrayList<>();
+        openDatabase();
+        Cursor cursor=msqLiteDatabase.rawQuery("Select * From locations Where category like ?", new String[]{category});
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            locationData=new LocationData(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getBlob(3),cursor.getDouble(4),cursor.getDouble(5));
+            data.add(locationData);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        closeDatabase();
+
+        return data;
+    }
+
+    public List<LocationData> getLocationList() {
         LocationData locationData;
         List<LocationData> data=new ArrayList<>();
         openDatabase();

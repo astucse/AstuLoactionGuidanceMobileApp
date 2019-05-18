@@ -1,5 +1,6 @@
 package com.k97h.khalil.astulocationguidance.activities;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,18 +14,20 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import com.k97h.khalil.astulocationguidance.R;
 import com.k97h.khalil.astulocationguidance.databases.DBhelper;
+import com.k97h.khalil.astulocationguidance.fragments.DashBoardFragment;
 import com.k97h.khalil.astulocationguidance.fragments.FavoriteLocationFragment;
 import com.k97h.khalil.astulocationguidance.fragments.HistoryLocationFragment;
 import com.k97h.khalil.astulocationguidance.fragments.LocationFragment;
 import com.k97h.khalil.astulocationguidance.interfaces.FragmentClickListener;
+import com.k97h.khalil.astulocationguidance.interfaces.FragmentdshClickListener;
 import com.k97h.khalil.astulocationguidance.models.LocationData;
 
 import java.io.File;
@@ -37,9 +40,10 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
-    private  FavoriteLocationFragment favoriateLocationFragment;
+    private FavoriteLocationFragment favoriateLocationFragment;
     private LocationFragment locationFragment;
     private HistoryLocationFragment historyLocationFragment;
+    private DashBoardFragment dashBoardFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DBhelper dBhelper = new DBhelper(this);
+        final DBhelper dBhelper = new DBhelper(this);
 
         File database = getApplicationContext().getDatabasePath(DBhelper.DBName);
         if (!database.exists()) {
@@ -68,11 +72,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        locationFragment = LocationFragment.newInstance(dBhelper);
+        locationFragment=LocationFragment.newInstance(dBhelper,"all");
+        dashBoardFragment = DashBoardFragment.newInstance();
         favoriateLocationFragment = FavoriteLocationFragment.newInstance(dBhelper);
         historyLocationFragment = HistoryLocationFragment.newInstance(dBhelper);
 
-        gotoFragment(locationFragment, true);
+
+        gotoFragment(dashBoardFragment, true);
         favoriateLocationFragment.setOnFragmentListener(new FragmentClickListener() {
             @Override
             public void onClickItem(List<LocationData> data, int position) {
@@ -91,7 +97,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
             }
         });
-        locationFragment.setOnFragmentListener(new FragmentClickListener() {
+        dashBoardFragment.setOnFragmentdshClickListener(new FragmentdshClickListener() {
+            @Override
+            public void onClickItem(String category) {
+                locationFragment=LocationFragment.newInstance(dBhelper,category);
+                gotoFragment(locationFragment,true);
+            }
+        });
+
+        /*locationFragment.setOnFragmentListener(new FragmentClickListener() {
             @Override
             public void onClickItem(List<LocationData> data, int position) {
                 Intent intent = new Intent(MainActivity.this, LocationDetailActivity.class);
@@ -99,8 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent.putExtra("position", position);
                 startActivity(intent);
             }
-        });
-
+        });*/
 
     }
 
@@ -117,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                   gotoFragment(locationFragment,false);
+                   gotoFragment(dashBoardFragment,false);
                    return true;
                 case R.id.navigation_dashboard:
                   gotoFragment(favoriateLocationFragment,false);
@@ -162,9 +175,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = null;
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
