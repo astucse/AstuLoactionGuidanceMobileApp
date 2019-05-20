@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.k97h.khalil.astulocationguidance.R;
+import com.k97h.khalil.astulocationguidance.databases.DBhelper;
 import com.k97h.khalil.astulocationguidance.interfaces.LocationItemClickListener;
 import com.k97h.khalil.astulocationguidance.models.LocationData;
 
@@ -23,10 +24,12 @@ public class LocationAdapter extends BaseAdapter {
     private Context context;
     private List<LocationData> data;
     private LocationItemClickListener itemClickListener;
+    private DBhelper dBhelper;
 
-    public LocationAdapter(Context context,List<LocationData> data){
+    public LocationAdapter(Context context, List<LocationData> data, DBhelper dBhelper){
         this.context=context;
         this.data=data;
+        this.dBhelper=dBhelper;
     }
 
     @Override
@@ -60,7 +63,14 @@ public class LocationAdapter extends BaseAdapter {
 
         LocationData locationData=data.get(position);
         viewHolder.textView.setText(locationData.getName());
-        viewHolder.favoriateitem.setTag(0);
+        boolean isFav=dBhelper.isFav(data.get(position).getId());
+        if(!isFav) {
+            viewHolder.favoriateitem.setTag(1);
+            viewHolder.favoriateitem.setImageResource(R.drawable.ic_favorite);
+        }else {
+            viewHolder.favoriateitem.setTag(0);
+            viewHolder.favoriateitem.setImageResource(R.drawable.ic_favorite_none);
+        }
         viewHolder.favoriateitem.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
@@ -69,9 +79,12 @@ public class LocationAdapter extends BaseAdapter {
                 if (i == 0) {
                     viewHolder.favoriateitem.setImageResource(R.drawable.ic_favorite);
                     viewHolder.favoriateitem.setTag(1);
+                    dBhelper.updateHistory(data.get(position).getId(),1);
+
                 }else{
                     viewHolder.favoriateitem.setImageResource(R.drawable.ic_favorite_none);
                     viewHolder.favoriateitem.setTag(0);
+                    dBhelper.updateHistory(data.get(position).getId(),0);
                 }
             }
         });

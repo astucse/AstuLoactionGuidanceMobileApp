@@ -56,7 +56,7 @@ public class LocationFragment extends Fragment {
 
         ListView mlistView=view.findViewById(R.id.locationlist);
         data=dBhelper.getLocationList(category);
-        LocationAdapter locationAdapter=new LocationAdapter(getContext(),data);
+        LocationAdapter locationAdapter=new LocationAdapter(getContext(),data,dBhelper);
         mlistView.setAdapter(locationAdapter);
 
         locationAdapter.setOnItemClickListener(new LocationItemClickListener() {

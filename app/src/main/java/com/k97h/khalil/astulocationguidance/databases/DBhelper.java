@@ -71,7 +71,7 @@ public class DBhelper extends SQLiteOpenHelper {
         LocationData locationData;
         List<LocationData> data=new ArrayList<>();
         openDatabase();
-        Cursor cursor=msqLiteDatabase.rawQuery("Select * From locations",null);
+        Cursor cursor=msqLiteDatabase.rawQuery("Select * From locations where favorite=1",null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
             locationData=new LocationData(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getBlob(3),cursor.getDouble(4),cursor.getDouble(5));
@@ -82,5 +82,23 @@ public class DBhelper extends SQLiteOpenHelper {
         closeDatabase();
 
         return data;
+    }
+    public void updateHistory(int id, int fav){
+
+        openDatabase();
+
+        msqLiteDatabase.execSQL("UPDATE locations SET favorite ="+ fav +" WHERE id ="+id);
+        closeDatabase();
+    }
+    public boolean isFav(int id){
+        openDatabase();
+    Cursor x=msqLiteDatabase.rawQuery("select * from locations where favorite=1 and id="+id,null);
+        x.moveToFirst();
+        if(!x.isAfterLast()){
+            closeDatabase();
+            return false;
+        }
+        closeDatabase();
+        return true;
     }
 }
