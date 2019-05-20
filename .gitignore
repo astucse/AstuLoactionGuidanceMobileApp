@@ -9,6 +9,6 @@
 /build
 /libs
 /captures
-/src/debug
+src/debug/res/values
 
 .externalNativeBuild
