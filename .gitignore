@@ -9,6 +9,6 @@
 /build
 /libs
 /captures
-src/debug/res/values
+/src/debug/res/values/google_maps_api.xml
 
 .externalNativeBuild
